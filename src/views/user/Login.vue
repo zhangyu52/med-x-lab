@@ -91,15 +91,11 @@
 
 <script>
 import md5 from 'md5'
-import TwoStepCaptcha from '@/components/tools/TwoStepCaptcha'
 import { mapActions } from 'vuex'
 import { timeFix } from '@/utils/util'
 import { getSmsCaptcha, get2step } from '@/api/login'
 
 export default {
-  components: {
-    TwoStepCaptcha
-  },
   data () {
     return {
       customActiveKey: 'tab1',
