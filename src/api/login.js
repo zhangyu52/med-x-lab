@@ -1,5 +1,5 @@
 import request from '@/utils/request';
-
+import store from '@/store'
 /**
  * login func
  * parameter: {
@@ -11,21 +11,10 @@ import request from '@/utils/request';
  * @param parameter
  * @returns {*}
  */
-export function login(parameter) {
+export function authLogin(parameter) {
   return request({
     method: 'post',
     url: '/auth/login',
-    data: {
-      name,
-      password
-    }
-  });
-}
-
-export function getSmsCaptcha(parameter) {
-  return axios({
-    url: api.SendSms,
-    method: 'post',
     data: parameter
   })
 }
@@ -34,13 +23,9 @@ export function getInfo() {
   return request({
     method: 'get',
     url: `/user/info/`,
-  });
-}
-
-export function getCurrentUserNav(token) {
-  return axios({
-    url: '/user/nav',
-    method: 'get'
+    headers: {
+      'Authorization': 'Bearer ' + store.getters.token
+    }
   })
 }
 
@@ -51,6 +36,5 @@ export function logout(token) {
     data: {
       token
     }
-  });
+  })
 }
-

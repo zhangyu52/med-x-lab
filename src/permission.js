@@ -27,7 +27,7 @@ router.beforeEach((to, from, next) => {
         store
           .dispatch('GetInfo')
           .then(res => {
-            //console.log(JSON.stringify(res))
+            // console.log(JSON.stringify(res))
             const roles = res.data.result && res.data.result.role
             console.log('roles', JSON.stringify(res))
             store.dispatch('GenerateRoutes', { roles }).then(() => {

@@ -118,9 +118,9 @@
 </template>
 
 <script>
+import store from '@/store';
 import { timeFix } from '@/utils/util'
-import { mapState } from 'vuex'
-
+import { mapState, mapActions, mapGetters } from 'vuex'
 import { PageView } from '@/layouts'
 import HeadInfo from '@/components/tools/HeadInfo'
 import { Radar } from '@/components'
@@ -219,14 +219,26 @@ export default {
     this.initRadar()
   },
   methods: {
+    ...mapActions(['Logout']),
     getProjects() {
       request({
         method: 'get',
-        url: `/list/search/projects`
-      }).then(response => {
-        this.projects = response.data.result && response.data.result.data
-        this.loading = false
+        url: `/list/search/projects`,
+        headers: {
+          Authorization: 'Bearer ' + store.getters.token
+        }
       })
+        .then(response => {
+          this.projects = response.data.result && response.data.result.data
+          this.loading = false
+        })
+        .catch(err => {
+          this.Logout().then(() => {
+            window.location.reload()
+          })
+          console.log('errrrrrrrrrrrrrrrrrrrrrrrrrrrrr')
+          this.$router.push({ name: 'login' })
+        })
     },
     getActivity() {
       request({
