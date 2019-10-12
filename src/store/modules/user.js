@@ -39,7 +39,7 @@ const user = {
         authLogin(userInfo).then(response => {
           console.log(JSON.stringify(response))
           const result = response.data
-          Vue.ls.set(ACCESS_TOKEN, result.token, 30 * 60)
+          Vue.ls.set(ACCESS_TOKEN, result.token, 30 * 60 * 1000) //expiry half hours
           commit('SET_TOKEN', result.token)
           resolve()
         }).catch(error => {
@@ -96,6 +96,7 @@ const user = {
         }).finally(() => {
           commit('SET_TOKEN', '')
           commit('SET_ROLES', [])
+          console.log('remove')
           Vue.ls.remove(ACCESS_TOKEN)
         })
       })

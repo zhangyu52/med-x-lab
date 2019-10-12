@@ -1,7 +1,7 @@
 <template>
   <div class="footer">
     <div class="links">
-      <a href="https://www.chansemt.com/" target="_blank">创志主页</a>
+      <a href="http://www.chansemt.com/" target="_blank">创志主页</a>
       <a href="/user/help">帮助</a>
       <a href="https://vue.ant.design/">友情链接</a>
     </div>

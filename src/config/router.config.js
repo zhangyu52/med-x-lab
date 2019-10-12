@@ -9,13 +9,13 @@ export const asyncRouterMap = [
     name: 'index',
     component: BasicLayout,
     meta: { title: '首页' },
-    redirect: '/dashboard/workplace',
+    redirect: '/dashboard/analysis',
     children: [
       // dashboard
       {
         path: '/dashboard',
         name: 'dashboard',
-        redirect: '/dashboard/workplace',
+        redirect: '/dashboard/analysis',
         component: RouteView,
         meta: { title: '仪表盘', keepAlive: true, icon: bxAnaalyse, permission: ['dashboard'] },
         children: [
@@ -23,19 +23,7 @@ export const asyncRouterMap = [
             path: '/dashboard/analysis',
             name: 'Analysis',
             component: () => import('@/views/dashboard/Analysis'),
-            meta: { title: '分析页', keepAlive: false, permission: ['dashboard'] }
-          },
-          // 外部链接
-          {
-            path: 'https://www.baidu.com/',
-            name: 'Monitor',
-            meta: { title: '监控页（外部）', target: '_blank' }
-          },
-          {
-            path: '/dashboard/workplace',
-            name: 'Workplace',
-            component: () => import('@/views/dashboard/Workplace'),
-            meta: { title: '工作台', keepAlive: true, permission: ['dashboard'] }
+            meta: { title: '图标展示页', keepAlive: false, permission: ['dashboard'] }
           },
           {
             path: '/dashboard/test-work',
@@ -45,31 +33,84 @@ export const asyncRouterMap = [
           }
         ]
       },
-
-      // forms
+      // admin
       {
-        path: '/form',
-        redirect: '/form/base-form',
+        path: '/admin',
+        redirect: '/admin/user',
         component: PageView,
-        meta: { title: '表单页', icon: 'form', permission: ['form'] },
+        meta: { title: '主数据维护', icon: 'appstore', permission: ['admin'] },
         children: [
           {
-            path: '/form/base-form',
-            name: 'BaseForm',
-            component: () => import('@/views/form/BasicForm'),
-            meta: { title: '基础表单', keepAlive: true, permission: ['form'] }
+            path: '/admin/user',
+            component: RouteView,
+            meta: { title: '用户管理', icon: 'user', permission: ['admin'] },
+            redirect: '/admin/user-management',
+            children: [
+              {
+                path: '/admin/user-management',
+                name: 'User',
+                component: () => import('@/views/admin/User'),
+                meta: { title: '用户管理', keepAlive: true, permission: ['admin'] }
+              },
+              {
+                path: '/admin/usergroup',
+                name: 'UserGroup',
+                component: () => import('@/views/admin/UserGroup'),
+                meta: { title: '用户组管理', keepAlive: true, permission: ['admin'] }
+              }
+            ]
+          },
+          {
+            path: '/device/manage',
+            component: RouteView,
+            meta: { title: '设备管理', icon: 'laptop', permission: ['admin'] },
+            redirect: '/device/manage/device',
+            children: [
+              {
+                path: '/device/manage/device',
+                name: 'Device',
+                component: () => import('@/views/device/Device'),
+                meta: { title: '设备管理', keepAlive: true, permission: ['admin'] }
+              },
+              {
+                path: '/device/manage/devicetype',
+                name: 'DeviceType',
+                component: () => import('@/views/device/DeviceType'),
+                meta: { title: '设备类型', keepAlive: false, permission: ['admin'] }
+              },
+              {
+                path: '/device/manage/parameter',
+                name: 'Parameter',
+                component: () => import('@/views/device/Parameter'),
+                meta: { title: '参数管理', keepAlive: true, permission: ['admin'] }
+              }
+            ]
+          },
+          {
+            path: '/customer/manage',
+            component: RouteView,
+            meta: { title: '客户管理', icon: 'idcard', permission: ['admin'] },
+            redirect: '/customer/manage/customer',
+            children: [
+              {
+                path: '/customer/manage/customer',
+                name: 'Customer',
+                component: () => import('@/views/customer/Customer'),
+                meta: { title: '客户管理', keepAlive: true, permission: ['admin'] }
+              }
+            ]
           },
           {
             path: '/form/step-form',
             name: 'StepForm',
             component: () => import('@/views/form/stepForm/StepForm'),
-            meta: { title: '分步表单', keepAlive: true, permission: ['form'] }
+            meta: { title: '分步表单', keepAlive: true, permission: ['admin'] }
           },
           {
             path: '/form/advanced-form',
             name: 'AdvanceForm',
             component: () => import('@/views/form/advancedForm/AdvancedForm'),
-            meta: { title: '高级表单', keepAlive: true, permission: ['form'] }
+            meta: { title: '高级表单', keepAlive: true, permission: ['admin'] }
           }
         ]
       }

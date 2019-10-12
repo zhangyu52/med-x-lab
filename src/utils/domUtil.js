@@ -16,4 +16,4 @@ export const setDocumentTitle = function (title) {
   }
 }
 
-export const domTitle = 'Ant Design Pro'
+export const domTitle = '实验室信息管理系统'

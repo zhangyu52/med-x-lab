@@ -18,12 +18,12 @@ export default {
   props: {
     title: {
       type: String,
-      default: 'Ant Design Pro',
+      default: 'C',
       required: false
     },
     showTitle: {
       type: Boolean,
-      default: true,
+      default: false,
       required: false
     }
   }

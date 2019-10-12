@@ -149,7 +149,6 @@ export default {
         ...filters
       }
       )
-      console.log('parameter', parameter)
       const result = this.data(parameter)
       // 对接自己的通用数据接口需要修改下方代码中的 r.pageNo, r.totalCount, r.data
       // eslint-disable-next-line
@@ -173,12 +172,11 @@ export default {
           // 当情况满足时，表示数据不满足分页大小，关闭 table 分页功能
           try {
             if ((['auto', true].includes(this.showPagination) && r.totalCount <= (r.pageNo * this.localPagination.pageSize))) {
-              this.localPagination.hideOnSinglePage = true
+              this.localPagination.hideOnSinglePage = false
             }
           } catch (e) {
             this.localPagination = false
           }
-          console.log('loadData -> this.localPagination', this.localPagination)
           this.localDataSource = r.data // 返回结果中的数组数据
           this.localLoading = false
         })

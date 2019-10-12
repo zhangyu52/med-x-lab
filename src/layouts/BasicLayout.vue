@@ -135,8 +135,6 @@ export default {
       }
       return left
     },
-    menuSelect () {
-    },
     drawerClose () {
       this.collapsed = false
     }
