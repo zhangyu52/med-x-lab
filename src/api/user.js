@@ -1,13 +1,21 @@
 import request from '@/utils/request'
 import store from '@/store'
 
+function getToken() {
+    if (store.getters.access_token) {
+        return store.getters.access_token
+    } else {
+        return Vue.ls.get(ACCESS_TOKEN)
+    }
+}
+
 export function getUserGroups(parameter) {
     return request({
         url: '/api/usergroups',
         method: 'get',
         params: parameter,
         headers: {
-            'Authorization': 'Bearer ' + store.getters.token
+            'Authorization': 'Bearer ' + getToken()
         }
     })
 }
@@ -18,7 +26,7 @@ export function addUserGroup(userGroup, userGroupItems) {
         method: 'post',
         data: { userGroup, userGroupItems },
         headers: {
-            'Authorization': 'Bearer ' + store.getters.token
+            'Authorization': 'Bearer ' + getToken()
         }
     })
 }
@@ -28,7 +36,7 @@ export function getUserGroupItems(parameter) {
         url: `/api/usergroupitems/${parameter}`,
         method: 'get',
         headers: {
-            'Authorization': 'Bearer ' + store.getters.token
+            'Authorization': 'Bearer ' + getToken()
         }
     })
 }
@@ -39,7 +47,7 @@ export function updateUserGroup(parameter) {
         method: 'put',
         data: parameter,
         headers: {
-            'Authorization': 'Bearer ' + store.getters.token
+            'Authorization': 'Bearer ' + getToken()
         }
     })
 }
@@ -51,7 +59,7 @@ export function deleteUserGroup(parameter) {
         method: 'delete',
         data: parameter,
         headers: {
-            'Authorization': 'Bearer ' + store.getters.token
+            'Authorization': 'Bearer ' + getToken()
         }
     })
 }
@@ -62,7 +70,7 @@ export function addUser(parameter) {
         method: 'post',
         data: parameter,
         headers: {
-            'Authorization': 'Bearer ' + store.getters.token
+            'Authorization': 'Bearer ' + getToken()
         }
     })
 }
@@ -73,7 +81,7 @@ export function updateUserGroupItems(user_group_id, userGroupItems) {
         method: 'put',
         data: { user_group_id, userGroupItems },
         headers: {
-            'Authorization': 'Bearer ' + store.getters.token
+            'Authorization': 'Bearer ' + getToken()
         }
     })
 }
@@ -84,7 +92,7 @@ export function getUsers(parameter) {
         method: 'get',
         params: parameter,
         headers: {
-            'Authorization': 'Bearer ' + store.getters.token
+            'Authorization': 'Bearer ' + getToken()
         }
     })
 }

@@ -1,11 +1,12 @@
 import Vue from 'vue'
 import { authLogin, getInfo, logout } from '@/api/login'
-import { ACCESS_TOKEN } from '@/store/mutation-types'
+import { ACCESS_TOKEN, REFRESH_TOKEN } from '@/store/mutation-types'
 import { welcome } from '@/utils/util'
 
 const user = {
   state: {
-    token: '',
+    access_token: '',
+    refresh_token: '',
     name: '',
     welcome: '',
     avatar: '',
@@ -14,8 +15,11 @@ const user = {
   },
 
   mutations: {
-    SET_TOKEN: (state, token) => {
-      state.token = token
+    SET_ACCESS_TOKEN: (state, access_token) => {
+      state.access_token = access_token
+    },
+    SET_REFRESH_TOKEN: (state, refresh_token) => {
+      state.refresh_token = refresh_token
     },
     SET_NAME: (state, { name, welcome }) => {
       state.name = name
@@ -34,13 +38,13 @@ const user = {
 
   actions: {
     // 登录
-    Login ({ commit }, userInfo) {
+    Login({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
         authLogin(userInfo).then(response => {
-          console.log(JSON.stringify(response))
-          const result = response.data
-          Vue.ls.set(ACCESS_TOKEN, result.token, 30 * 60 * 1000) //expiry half hours
-          commit('SET_TOKEN', result.token)
+          Vue.ls.set(ACCESS_TOKEN, response.data.ACCESS_TOKEN, 1 * 60 * 1000) //expiry 1 minute
+          Vue.ls.set(REFRESH_TOKEN, response.data.REFRESH_TOKEN, 2 * 60 * 1000) //expiry 2 minutes
+          commit('SET_ACCESS_TOKEN', response.data.ACCESS_TOKEN)
+          commit('SET_REFRESH_TOKEN', response.data.REFRESH_TOKEN)
           resolve()
         }).catch(error => {
           reject(error)
@@ -49,36 +53,24 @@ const user = {
     },
 
     // 获取用户信息
-    GetInfo ({ commit }) {
-      console.log('0000000000000000000')
+    GetInfo({ commit }) {
       return new Promise((resolve, reject) => {
         getInfo().then(response => {
-          const result = response.data.result
-          console.log('1111111111111111111', response)
-          if (result.role && result.role.permissions.length > 0) {
-            const role = result.role
-            role.permissions = result.role.permissions
-            role.permissions.map(per => {
-              if (per.actionEntitySet != null && per.actionEntitySet.length > 0) {
-                const action = per.actionEntitySet.map(action => { return action.action })
-                per.actionList = action
+          if (response.data.roles.permissions.length > 0) {
+            response.data.roles.permissions.map(permission => {
+              if (permission.actionEntitySet.length > 0) {
+                const action = permission.actionEntitySet.map(action => { return action.action })
+                permission.actionList = action
               }
             })
-            console.log('22222222222222222222222')
-            role.permissionList = role.permissions.map(permission => { return permission.permissionId })
-            console.log('33333333333333333333333')
-            commit('SET_ROLES', result.role)
-            console.log('4444444444444444444444444')
-            commit('SET_INFO', result)
-            console.log('55555555555555555555555')
+            response.data.roles.permissionList = response.data.roles.permissions.map(permission => { return permission.permissionId })
+            commit('SET_ROLES', response.data.roles)
+            commit('SET_INFO', response.data)
           } else {
             reject(new Error('getInfo: roles must be a non-null array !'))
           }
-          console.log('66666666666666666')
-          commit('SET_NAME', { name: result.name, welcome: welcome() })
-          console.log('777777777777777777777777')
-          commit('SET_AVATAR', result.avatar)
-
+          commit('SET_NAME', { name: response.data.name, welcome: welcome() })
+          commit('SET_AVATAR', response.data.avatar)
           resolve(response)
         }).catch(error => {
           reject(error)
@@ -87,14 +79,15 @@ const user = {
     },
 
     // 登出
-    Logout ({ commit, state }) {
+    Logout({ commit, state }) {
       return new Promise((resolve) => {
-        logout(state.token).then(() => {
+        logout(state.access_token).then(() => {
           resolve()
         }).catch(() => {
           resolve()
         }).finally(() => {
-          commit('SET_TOKEN', '')
+          commit('SET_ACCESS_TOKEN', '')
+          commit('SET_REFRESH_TOKEN', '')
           commit('SET_ROLES', [])
           console.log('remove')
           Vue.ls.remove(ACCESS_TOKEN)

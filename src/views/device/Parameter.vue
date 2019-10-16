@@ -67,7 +67,6 @@ import { STable } from '@/components'
 export default {
   created() {
     getParameters().then(res => {
-      console.log(JSON.stringify(res))
       this.data = res.data
     })
   },
@@ -115,7 +114,6 @@ export default {
       mdl: {},
       loadData: () => {
         return getParameters().then(res => {
-          console.log('getParameters', res)
           return res.data
         })
       }
@@ -143,10 +141,7 @@ export default {
     },
     handleOk() {
       this.form.validateFields((err, values) => {
-        console.log(JSON.stringify(this.mdl))
         if (!err) {
-          console.log(JSON.stringify(this.mdl))
-
           addParameter(this.mdl).then(res => {
               this.visible = false
               this.form.resetFields()

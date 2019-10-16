@@ -11,7 +11,6 @@ import 'ant-design-vue/dist/antd.less'
 // ext library
 import MultiTab from '@/components/MultiTab'
 import PageLoading from '@/components/PageLoading'
-import PermissionHelper from '@/utils/helper/permission'
 // import '@/components/use'
 import './directives/action'
 
@@ -20,5 +19,4 @@ Vue.use(Viser)
 Vue.use(MultiTab)
 Vue.use(PageLoading)
 Vue.use(VueStorage, config.storageOptions)
-Vue.use(PermissionHelper)
 Vue.use(VueCropper)

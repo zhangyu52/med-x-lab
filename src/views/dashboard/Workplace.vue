@@ -118,15 +118,12 @@
 </template>
 
 <script>
-import store from '@/store';
+import store from '@/store'
 import { timeFix } from '@/utils/util'
 import { mapState, mapActions, mapGetters } from 'vuex'
 import { PageView } from '@/layouts'
 import HeadInfo from '@/components/tools/HeadInfo'
 import { Radar } from '@/components'
-
-import { getRoleList, getServiceList } from '@/api/manage'
-
 import request from '@/utils/request'
 
 const DataSet = require('@antv/data-set')
@@ -203,14 +200,6 @@ export default {
   created() {
     this.user = this.userInfo
     this.avatar = this.userInfo.avatar
-
-    // getRoleList().then(res => {
-    //   console.log('workplace -> call getRoleList()', res)
-    // })
-
-    // getServiceList().then(res => {
-    //   console.log('workplace -> call getServiceList()', res)
-    // })
   },
   mounted() {
     this.getProjects()
@@ -219,24 +208,30 @@ export default {
     this.initRadar()
   },
   methods: {
+    getToken() {
+      if (store.getters.access_token) {
+        return store.getters.access_token
+      } else {
+        return Vue.ls.get(ACCESS_TOKEN)
+      }
+    },
     ...mapActions(['Logout']),
     getProjects() {
       request({
         method: 'get',
         url: `/list/search/projects`,
         headers: {
-          Authorization: 'Bearer ' + store.getters.token
+          Authorization: 'Bearer ' + this.getToken()
         }
       })
         .then(response => {
-          this.projects = response.data.result && response.data.result.data
+          this.projects = response.data
           this.loading = false
         })
         .catch(err => {
           this.Logout().then(() => {
             window.location.reload()
           })
-          console.log('errrrrrrrrrrrrrrrrrrrrrrrrrrrrr')
           this.$router.push({ name: 'login' })
         })
     },
@@ -245,7 +240,7 @@ export default {
         method: 'get',
         url: `/workplace/activity`
       }).then(response => {
-        this.activities = response.data.result
+        this.activities = response.data
       })
     },
     getTeams() {
@@ -253,7 +248,7 @@ export default {
         method: 'get',
         url: `/workplace/teams`
       }).then(response => {
-        this.teams = response.data.result
+        this.teams = response.data
       })
     },
     initRadar() {
@@ -262,7 +257,7 @@ export default {
         method: 'get',
         url: `/workplace/radar`
       }).then(response => {
-        const dv = new DataSet.View().source(response.data.result)
+        const dv = new DataSet.View().source(response.data)
         dv.transform({
           type: 'fold',
           fields: ['个人', '团队', '部门'],

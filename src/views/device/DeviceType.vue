@@ -128,10 +128,15 @@ export default {
       disabled: false,
       parameters: [],
       loadData: () => {
-        return getDeviceTypes().then(res => {
-          console.log('getDeviceTypes', res)
-          return res.data
-        })
+        return getDeviceTypes()
+          .then(res => {
+            if(res) {
+              return res.data
+            } else {
+              return null
+            }            
+          })
+          .catch(() => console.log('DeviceType promise catch err'))
       },
       columns: [
         {

@@ -28,7 +28,7 @@ export default function Initializer () {
   store.commit('TOGGLE_COLOR', config.primaryColor)
   store.commit('TOGGLE_MULTI_TAB', config.multiTab)
 
-  store.commit('SET_TOKEN', Vue.ls.get(ACCESS_TOKEN))
-
+  store.commit('SET_ACCESS_TOKEN', Vue.ls.get(ACCESS_TOKEN))
+  store.commit('SET_REFRESH_TOKEN', Vue.ls.get(REFRESH_TOKEN))
   // last step
 }

@@ -1,12 +1,20 @@
 import request from '@/utils/request'
 import store from '@/store'
 
+function getToken() {
+    if (store.getters.access_token) {
+        return store.getters.access_token
+    } else {
+        return Vue.ls.get(ACCESS_TOKEN)
+    }
+}
+
 export function getParameters() {
     return request({
         url: '/api/parameters',
         method: 'get',
         headers: {
-            'Authorization': 'Bearer ' + store.getters.token
+            'Authorization': 'Bearer ' + getToken()
         }
     })
 }
@@ -17,7 +25,7 @@ export function addParameter(parameter) {
         method: 'post',
         data: parameter,
         headers: {
-            'Authorization': 'Bearer ' + store.getters.token
+            'Authorization': 'Bearer ' + getToken()
         }
     })
 }
@@ -28,7 +36,7 @@ export function addDeviceType(parameter) {
         method: 'post',
         data: parameter,
         headers: {
-            'Authorization': 'Bearer ' + store.getters.token
+            'Authorization': 'Bearer ' + getToken()
         }
     })
 }
@@ -38,7 +46,7 @@ export function getDeviceTypes() {
         url: '/api/device_types',
         method: 'get',
         headers: {
-            'Authorization': 'Bearer ' + store.getters.token
+            'Authorization': 'Bearer ' + getToken()
         }
     })
 }
@@ -49,7 +57,7 @@ export function addDevice(parameter) {
         method: 'post',
         data: parameter,
         headers: {
-            'Authorization': 'Bearer ' + store.getters.token
+            'Authorization': 'Bearer ' + getToken()
         }
     })
 }
@@ -59,7 +67,7 @@ export function getDevices() {
         url: '/api/devices',
         method: 'get',
         headers: {
-            'Authorization': 'Bearer ' + store.getters.token
+            'Authorization': 'Bearer ' + getToken()
         }
     })
 }

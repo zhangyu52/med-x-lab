@@ -74,7 +74,6 @@
 
 <script>
 import { STable } from '@/components'
-import { getRoles } from '@/api/userGroup'
 import { getUserGroups, updateUserGroup, deleteUserGroup } from '@/api/user'
 import AddGroupModal from './modules/AddGroupModal'
 import DetailGroupModal from './modules/DetailGroupModal'
@@ -150,7 +149,6 @@ export default {
     },
     handleDelete(record) {
       deleteUserGroup(record).then(res => {
-        console.log(JSON.stringify(res))
         this.$refs.table.refresh()
       })
     },
