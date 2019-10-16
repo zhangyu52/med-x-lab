@@ -105,18 +105,20 @@ export const asyncRouterMap = [
                 meta: { title: '客户管理', keepAlive: true, permission: ['admin'] }
               }
             ]
-          },
+          }
+        ]
+      },
+      {
+        path: '/task/',
+        component: RouteView,
+        meta: { title: '任务管理', icon: 'idcard', permission: ['admin'] },
+        redirect: '/task/task',
+        children: [
           {
-            path: '/form/step-form',
-            name: 'StepForm',
-            component: () => import('@/views/form/stepForm/StepForm'),
-            meta: { title: '分步表单', keepAlive: true, permission: ['admin'] }
-          },
-          {
-            path: '/form/advanced-form',
-            name: 'AdvanceForm',
-            component: () => import('@/views/form/advancedForm/AdvancedForm'),
-            meta: { title: '高级表单', keepAlive: true, permission: ['admin'] }
+            path: '/task/task',
+            name: 'Task',
+            component: () => import('@/views/task/Task'),
+            meta: { title: '任务执行', keepAlive: true, permission: ['admin'] }
           }
         ]
       }
@@ -142,16 +144,6 @@ export const constantRouterMap = [
         path: 'login',
         name: 'login',
         component: () => import(/* webpackChunkName: "user" */ '@/views/user/Login')
-      },
-      {
-        path: 'register',
-        name: 'register',
-        component: () => import(/* webpackChunkName: "user" */ '@/views/user/Register')
-      },
-      {
-        path: 'register-result',
-        name: 'registerResult',
-        component: () => import(/* webpackChunkName: "user" */ '@/views/user/RegisterResult')
       },
       {
         path: 'recover',

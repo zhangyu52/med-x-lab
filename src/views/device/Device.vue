@@ -28,27 +28,58 @@
     <a-modal title="新建设备" :width="800" v-model="visible" @ok="handleOk">
       <a-form :form="form">
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="设备名称">
-          <a-input placeholder="请输入设备名称" v-model="mdl.name" id="name" />
+          <a-input size="small" placeholder="请输入设备名称" v-model="mdl.name" id="name" />
         </a-form-item>
 
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="状态">
-          <a-select v-model="mdl.status">
+          <a-select size="small" v-model="mdl.status">
             <a-select-option value="1">正常</a-select-option>
             <a-select-option value="2">禁用</a-select-option>
           </a-select>
         </a-form-item>
 
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="描述">
-          <a-input v-model="mdl.describe" placeholder id="describe" />
+          <a-input size="small" v-model="mdl.describe" placeholder id="describe" />
         </a-form-item>
 
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="设备类型">
-          <a-select v-model="mdl.deviceType">
+          <a-select size="small" v-model="mdl.deviceType">
             <a-select-option
               v-for="deviceType in deviceTypes"
               :key="deviceType.id"
-            >{{deviceType.name}}</a-select-option>
+            >{{ deviceType.name }}</a-select-option>
           </a-select>
+        </a-form-item>
+
+        <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="设备IP地址">
+          <a-input-group
+            compact
+            size="small"
+            v-decorator="[
+              'address1',
+              {rules: [{ required: true, message: '请输入参数名称'}], validateTrigger: ['change', 'blur']}
+            ]"
+          >
+            <a-input style=" width: 60px; text-align: center" id="address1" />
+            <a-input
+              style=" width: 20px; border-left: 0; pointer-events: none"
+              placeholder="."
+              disabled
+            />
+            <a-input style=" width: 60px; text-align: center" id="address2" />
+            <a-input
+              style=" width: 20px; border-left: 0; pointer-events: none"
+              placeholder="."
+              disabled
+            />
+            <a-input style=" width: 60px; text-align: center" id="address3" />
+            <a-input
+              style=" width: 20px; border-left: 0; pointer-events: none"
+              placeholder="."
+              disabled
+            />
+            <a-input style=" width: 60px; text-align: center" id="address4" />
+          </a-input-group>
         </a-form-item>
       </a-form>
     </a-modal>
@@ -60,7 +91,7 @@ import { getDeviceTypes, addDevice, getDevices } from '@/api/device'
 import { STable } from '@/components'
 import moment from 'moment'
 export default {
-  data() {
+  data () {
     return {
       form: this.$form.createForm(this),
       visible: false,
@@ -119,14 +150,14 @@ export default {
   },
 
   methods: {
-    handleNew() {
+    handleNew () {
       this.visible = true
       getDeviceTypes().then(res => {
         this.deviceTypes = res.data.data
         console.log(JSON.stringify(this.deviceTypes))
       })
     },
-    handleOk() {
+    handleOk () {
       this.form.validateFields((err, values) => {
         if (!err) {
           addDevice(this.mdl).then(res => {
@@ -139,7 +170,7 @@ export default {
     }
   },
   filters: {
-    fromNow(date) {
+    fromNow (date) {
       return moment(date).format('YYYY-MM-DD HH:mm:ss')
     }
   }

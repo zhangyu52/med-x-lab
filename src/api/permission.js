@@ -1,7 +1,9 @@
-import request from '@/utils/request';
+import Vue from 'vue'
+import request from '@/utils/request'
 import store from '@/store'
+import { ACCESS_TOKEN } from '@/store/mutation-types'
 
-function getToken() {
+function getToken () {
   if (store.getters.access_token) {
     return store.getters.access_token
   } else {
@@ -9,12 +11,12 @@ function getToken() {
   }
 }
 
-export function getPermissionsNoPager() {
-    return request({
-      method: 'get',
-      url: `/permission/no-pager`,
-      headers: {
-        'Authorization': 'Bearer ' + getToken()
-      }
-    })
-  }
+export function getPermissionsNoPager () {
+  return request({
+    method: 'get',
+    url: `/permission/no-pager`,
+    headers: {
+      'Authorization': 'Bearer ' + getToken()
+    }
+  })
+}

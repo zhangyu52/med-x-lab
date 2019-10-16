@@ -3,7 +3,7 @@ import request from '@/utils/request'
 import store from '@/store'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
 
-function getToken() {
+function getToken () {
   if (store.getters.access_token) {
     return store.getters.access_token
   } else {
@@ -11,7 +11,7 @@ function getToken() {
   }
 }
 
-export function authLogin(parameter) {
+export function authLogin (parameter) {
   return request({
     method: 'post',
     url: '/auth/login',
@@ -19,7 +19,7 @@ export function authLogin(parameter) {
   })
 }
 
-export function getInfo() {
+export function getInfo () {
   return request({
     method: 'get',
     url: `/user/info/`,
@@ -29,7 +29,7 @@ export function getInfo() {
   })
 }
 
-export function logout(token) {
+export function logout (token) {
   return request({
     method: 'post',
     url: '/user/logout',

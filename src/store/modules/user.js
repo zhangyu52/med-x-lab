@@ -15,11 +15,11 @@ const user = {
   },
 
   mutations: {
-    SET_ACCESS_TOKEN: (state, access_token) => {
-      state.access_token = access_token
+    SET_ACCESS_TOKEN: (state, accessToken) => {
+      state.access_token = accessToken
     },
-    SET_REFRESH_TOKEN: (state, refresh_token) => {
-      state.refresh_token = refresh_token
+    SET_REFRESH_TOKEN: (state, refreshToken) => {
+      state.refresh_token = refreshToken
     },
     SET_NAME: (state, { name, welcome }) => {
       state.name = name
@@ -38,11 +38,11 @@ const user = {
 
   actions: {
     // 登录
-    Login({ commit }, userInfo) {
+    Login ({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
         authLogin(userInfo).then(response => {
-          Vue.ls.set(ACCESS_TOKEN, response.data.ACCESS_TOKEN, 1 * 60 * 1000) //expiry 1 minute
-          Vue.ls.set(REFRESH_TOKEN, response.data.REFRESH_TOKEN, 2 * 60 * 1000) //expiry 2 minutes
+          Vue.ls.set(ACCESS_TOKEN, response.data.ACCESS_TOKEN, 10 * 60 * 1000) // expiry 1 minute
+          Vue.ls.set(REFRESH_TOKEN, response.data.REFRESH_TOKEN, 20 * 60 * 1000) // expiry 2 minutes
           commit('SET_ACCESS_TOKEN', response.data.ACCESS_TOKEN)
           commit('SET_REFRESH_TOKEN', response.data.REFRESH_TOKEN)
           resolve()
@@ -53,7 +53,7 @@ const user = {
     },
 
     // 获取用户信息
-    GetInfo({ commit }) {
+    GetInfo ({ commit }) {
       return new Promise((resolve, reject) => {
         getInfo().then(response => {
           if (response.data.roles.permissions.length > 0) {
@@ -79,7 +79,7 @@ const user = {
     },
 
     // 登出
-    Logout({ commit, state }) {
+    Logout ({ commit, state }) {
       return new Promise((resolve) => {
         logout(state.access_token).then(() => {
           resolve()

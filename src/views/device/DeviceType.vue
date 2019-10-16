@@ -65,39 +65,39 @@ import { getParameters, addDeviceType, getDeviceTypes } from '@/api/device'
 import { STable } from '@/components'
 import moment from 'moment'
 export default {
-  beforeCreate() {
+  beforeCreate () {
     console.log('beforeCreate()', this.$el, this.$data)
   },
-  created() {
+  created () {
     // 已初始化 data 数据，但数据未挂载到模板中
     console.log('created()', this.$el, this.$data)
   },
-  beforeMount() {
+  beforeMount () {
     // 模板已获取到，但是数据未挂载到模板上
     console.log('beforeMount()', this.$el, this.$data)
   },
-  mounted() {
+  mounted () {
     // 编译完成 ，数据已挂载到模板中
     console.log('mounted()', this.$el, this.$data)
   },
-  beforeUpdate() {
+  beforeUpdate () {
     // 当 data 改变后，去更新模板中的数据前调用
     // 注意：浏览器问题，需使用 this.$el.innerHTML 获取更新前的 Dom 模板数据
     console.log('beforeUpdate()', this.$el.innerHTML, this.$data)
   },
-  updated() {
+  updated () {
     // data 被 Vue 渲染之后的 Dom 数据模板
     console.log('updated()', this.$el.innerHTML, this.$data)
   },
-  beforeDestroy() {
+  beforeDestroy () {
     // 销毁实例前调用
     console.log('beforeDestroy()')
   },
-  destroyed() {
+  destroyed () {
     // 销毁实例后调用
     console.log('created()')
   },
-  data() {
+  data () {
     const mockData = []
     for (let i = 0; i < 20; i++) {
       mockData.push({
@@ -106,8 +106,6 @@ export default {
         description: `description of content${i + 1}`
       })
     }
-
-    const oriTargetKeys = mockData.filter(item => +item.key % 3 > 1).map(item => item.key)
 
     return {
       visible: false,
@@ -130,11 +128,11 @@ export default {
       loadData: () => {
         return getDeviceTypes()
           .then(res => {
-            if(res) {
+            if (res) {
               return res.data
             } else {
               return null
-            }            
+            }
           })
           .catch(() => console.log('DeviceType promise catch err'))
       },
@@ -172,7 +170,7 @@ export default {
   },
 
   methods: {
-    handleNew() {
+    handleNew () {
       this.visible = true
       this.mockData.length = 0
       getParameters().then(res => {
@@ -187,7 +185,7 @@ export default {
         console.log(JSON.stringify(this.mockData))
       })
     },
-    handleOk() {
+    handleOk () {
       console.log(JSON.stringify(this.targetKeys))
 
       this.form.validateFields((err, values) => {
@@ -203,14 +201,14 @@ export default {
         }
       })
     },
-    handleChange(nextTargetKeys, direction, moveKeys) {
+    handleChange (nextTargetKeys, direction, moveKeys) {
       this.targetKeys = nextTargetKeys
 
       console.log('targetKeys: ', nextTargetKeys)
       console.log('direction: ', direction)
       console.log('moveKeys: ', moveKeys)
     },
-    handleSelectChange(sourceSelectedKeys, targetSelectedKeys) {
+    handleSelectChange (sourceSelectedKeys, targetSelectedKeys) {
       this.selectedKeys = [...sourceSelectedKeys, ...targetSelectedKeys]
 
       console.log('sourceSelectedKeys: ', sourceSelectedKeys)
@@ -218,7 +216,7 @@ export default {
     }
   },
   filters: {
-    fromNow(date) {
+    fromNow (date) {
       return moment(date).format('YYYY-MM-DD HH:mm:ss')
     }
   }

@@ -70,7 +70,13 @@
             </a-list>
           </a-card>
         </a-col>
-        <a-col style="padding: 0 12px" :xl="8" :lg="24" :md="24" :sm="24" :xs="24">
+        <a-col
+          style="padding: 0 12px"
+          :xl="8"
+          :lg="24"
+          :md="24"
+          :sm="24"
+          :xs="24">
           <a-card
             title="快速开始 / 便捷导航"
             style="margin-bottom: 24px"
@@ -118,13 +124,15 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import store from '@/store'
 import { timeFix } from '@/utils/util'
-import { mapState, mapActions, mapGetters } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import { PageView } from '@/layouts'
 import HeadInfo from '@/components/tools/HeadInfo'
 import { Radar } from '@/components'
 import request from '@/utils/request'
+import { ACCESS_TOKEN } from '@/store/mutation-types'
 
 const DataSet = require('@antv/data-set')
 
@@ -135,7 +143,7 @@ export default {
     HeadInfo,
     Radar
   },
-  data() {
+  data () {
     return {
       timeFix: timeFix(),
       avatar: '',
@@ -193,22 +201,22 @@ export default {
       nickname: state => state.user.nickname,
       welcome: state => state.user.welcome
     }),
-    userInfo() {
+    userInfo () {
       return this.$store.getters.userInfo
     }
   },
-  created() {
+  created () {
     this.user = this.userInfo
     this.avatar = this.userInfo.avatar
   },
-  mounted() {
+  mounted () {
     this.getProjects()
     this.getActivity()
     this.getTeams()
     this.initRadar()
   },
   methods: {
-    getToken() {
+    getToken () {
       if (store.getters.access_token) {
         return store.getters.access_token
       } else {
@@ -216,7 +224,7 @@ export default {
       }
     },
     ...mapActions(['Logout']),
-    getProjects() {
+    getProjects () {
       request({
         method: 'get',
         url: `/list/search/projects`,
@@ -228,14 +236,14 @@ export default {
           this.projects = response.data
           this.loading = false
         })
-        .catch(err => {
+        .catch(() => {
           this.Logout().then(() => {
             window.location.reload()
           })
           this.$router.push({ name: 'login' })
         })
     },
-    getActivity() {
+    getActivity () {
       request({
         method: 'get',
         url: `/workplace/activity`
@@ -243,7 +251,7 @@ export default {
         this.activities = response.data
       })
     },
-    getTeams() {
+    getTeams () {
       request({
         method: 'get',
         url: `/workplace/teams`
@@ -251,7 +259,7 @@ export default {
         this.teams = response.data
       })
     },
-    initRadar() {
+    initRadar () {
       this.radarLoading = true
       request({
         method: 'get',
