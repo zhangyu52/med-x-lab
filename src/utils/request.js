@@ -38,6 +38,7 @@ request.interceptors.response.use(function (response) {
   // Any status codes that falls outside the range of 2xx cause this function to trigger
   // Do something with response error
   if (error.response.status === 401) {
+    console.log('catch 401 error', isRefreshing.isRefreshing)
     if (isRefreshing.isRefreshing === true) {
       isRefreshing.isRefreshing = false
       ToLogin()

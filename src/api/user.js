@@ -55,7 +55,6 @@ export function updateUserGroup (parameter) {
 }
 
 export function deleteUserGroup (parameter) {
-  console.log(parameter)
   return request({
     url: `/api/usergroup/${parameter.id}`,
     method: 'delete',
@@ -93,6 +92,60 @@ export function getUsers (parameter) {
     url: '/api/users',
     method: 'get',
     params: parameter,
+    headers: {
+      'Authorization': 'Bearer ' + getToken()
+    }
+  })
+}
+
+export function getUser (id) {
+  return request({
+    url: `/api/user/${id}`,
+    method: 'get',
+    headers: {
+      'Authorization': 'Bearer ' + getToken()
+    }
+  })
+}
+
+export function activateUser (parameter) {
+  return request({
+    url: `/api/user/activate`,
+    method: 'put',
+    data: parameter,
+    headers: {
+      'Authorization': 'Bearer ' + getToken()
+    }
+  })
+}
+
+export function disableUser (parameter) {
+  return request({
+    url: `/api/user/disable`,
+    method: 'put',
+    data: parameter,
+    headers: {
+      'Authorization': 'Bearer ' + getToken()
+    }
+  })
+}
+
+export function passwordUser (parameter) {
+  return request({
+    url: `/api/user/password`,
+    method: 'put',
+    data: parameter,
+    headers: {
+      'Authorization': 'Bearer ' + getToken()
+    }
+  })
+}
+
+export function deleteUser (parameter) {
+  return request({
+    url: `/api/user/${parameter.id}`,
+    method: 'delete',
+    data: parameter,
     headers: {
       'Authorization': 'Bearer ' + getToken()
     }

@@ -111,7 +111,7 @@ export const asyncRouterMap = [
       {
         path: '/task/',
         component: RouteView,
-        meta: { title: '任务管理', icon: 'idcard', permission: ['admin'] },
+        meta: { title: '任务管理', icon: 'tool', permission: ['admin'] },
         redirect: '/task/task',
         children: [
           {

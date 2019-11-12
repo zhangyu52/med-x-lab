@@ -1,11 +1,16 @@
 <template>
-  <a-card :bordered="false">
+  <a-card :bordered="false" style="background: #dddddd;">
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="48">
           <a-col :md="8" :sm="24">
             <span class="table-page-search-submitButtons">
-              <a-button type="primary" icon="plus" style="margin-left: 16px" @click="handleNew">新建</a-button>
+              <a-button
+                type="primary"
+                icon="plus"
+                style="margin-left: 16px"
+                @click="handleNewUser"
+              >新建账号</a-button>
             </span>
           </a-col>
         </a-row>
@@ -13,74 +18,46 @@
     </div>
 
     <s-table
-      size="default"
+      size="small"
       ref="table"
       :columns="columns"
       :data="loadData"
       :rowKey="record => record.id"
       :showPagination="true"
+      bordered style="background: #dddddd;"
     >
       <span slot="action" slot-scope="text, record">
-        <a @click="handleDetail(record)">详情</a>
+        <a v-if="record.status == 1" @click="disableUser(record)">停用</a>
+        <a v-else @click="enableUser(record)">激活</a>
         <a-divider type="vertical" />
-        <a-dropdown>
-          <a class="ant-dropdown-link">
-            更多
-            <a-icon type="down" />
-          </a>
-          <a-menu slot="overlay">
-            <a-menu-item>
-              <a @click="handleEdit(record)">编辑</a>
-            </a-menu-item>
-            <a-menu-item>
-              <a v-if="record.status" @click="handleToggle(record, false)">禁用</a>
-              <a v-else @click="handleToggle(record, true)">启用</a>
-            </a-menu-item>
-            <a-menu-item :disabled="record.hasUser">
-              <span v-if="record.hasUser">删除</span>
-              <a v-else @click="handleDelete(record)">删除</a>
-            </a-menu-item>
-          </a-menu>
-        </a-dropdown>
+        <a @click="editUser(record)">编辑</a>
+        <a-divider type="vertical" />
+        <a @click="deleteUser(record)" :disabled="record.status != 0">删除</a>
+        <a-divider type="vertical" />
+        <a @click="resetPassword(record)">重置密码</a>
       </span>
-      <span slot="createdAt" slot-scope="createdAt">{{ createdAt | fromNow }}</span>
-      <span slot="status" slot-scope="status">{{ status == 1 ? '正常' : '禁用' }}</span>
+      <span slot="sex" slot-scope="text">{{text == 1? '男' : '女'}}</span>
+      <span slot="enploymentDate" slot-scope="text">{{text | fromNow}}</span>
+      <span
+        slot="validDate"
+        slot-scope="text, record"
+      >{{record.validFromDate | fromNow}} ~ {{record.validToDate | fromNow}}</span>
+      <span slot="status" slot-scope="status">{{ status | statusFilter }}</span>
     </s-table>
-
-    <a-modal title="新建用户" :width="800" v-model="visible" @ok="handleOk">
-      <a-form :form="form">
-        <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="用户登录名">
-          <a-input placeholder="请输入用户登录名" v-model="mdl.login_name" id="login_name" />
-        </a-form-item>
-
-        <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="用户显示名">
-          <a-input placeholder="请输入用户显示名" v-model="mdl.name" id="name" />
-        </a-form-item>
-
-        <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="状态">
-          <a-select v-model="mdl.status">
-            <a-select-option value="1">正常</a-select-option>
-            <a-select-option value="2">禁用</a-select-option>
-          </a-select>
-        </a-form-item>
-
-        <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="描述">
-          <a-input v-model="mdl.describe" placeholder id="describe" />
-        </a-form-item>
-
-        <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="用户权限组">
-          <a-select v-model="mdl.user_group_id">
-            <a-select-option v-for="userGroup in userGroups" :key="userGroup.id">{{userGroup.describe}}</a-select-option>
-          </a-select>
-        </a-form-item>
-      </a-form>
-    </a-modal>
+    <add-user-modal ref="addModal" @OK="refreshData()"></add-user-modal>
+    <activate-user-modal ref="activateModal" @OK="refreshData()"></activate-user-modal>
+    <reset-password-modal ref="resetPasswordModal" @OK="resetPasswordCallback()"></reset-password-modal>
+    <edit-user-modal ref="editModal"></edit-user-modal>
   </a-card>
 </template>
 
 <script>
 import { STable } from '@/components'
-import { getUserGroups, addUser, getUsers } from '@/api/user'
+import { getUserGroups, addUser, getUsers, disableUser, deleteUser } from '@/api/user'
+import AddUserModal from './modules/AddUserModal'
+import ActivateUserModal from './modules/ActivateUserModal'
+import ResetPasswordModal from './modules/ResetPasswordModal'
+import EditUserModal from './modules/EditUserModal'
 import moment from 'moment'
 export default {
   data() {
@@ -99,12 +76,38 @@ export default {
       userGroups: [],
       columns: [
         {
-          title: '用户登录名',
-          dataIndex: 'login_name'
+          title: '用户ID',
+          dataIndex: 'id',
+          align: 'center'
         },
         {
-          title: '用户显示名',
-          dataIndex: 'name'
+          title: '用户账号',
+          dataIndex: 'userCode',
+          align: 'center'
+        },
+        {
+          title: '用户姓名',
+          dataIndex: 'userName',
+          align: 'center'
+        },
+        {
+          title: '所属部门',
+          dataIndex: 'department'
+        },
+        {
+          title: '性别',
+          dataIndex: 'sex',
+          scopedSlots: { customRender: 'sex' }
+        },
+        {
+          title: '入职日期',
+          dataIndex: 'enploymentDate',
+          scopedSlots: { customRender: 'enploymentDate' }
+        },
+        {
+          title: '账号有效期',
+          dataIndex: 'validFromDate',
+          scopedSlots: { customRender: 'validDate' }
         },
         {
           title: '状态',
@@ -112,15 +115,9 @@ export default {
           scopedSlots: { customRender: 'status' }
         },
         {
-          title: '创建时间',
-          dataIndex: 'createdAt',
-          sorter: true,
-          defaultSortOrder: ['ASC', 'DESC', null],
-          scopedSlots: { customRender: 'createdAt' }
-        },
-        {
           title: '操作',
-          width: '150px',
+          width: '225px',
+          align: 'center',
           dataIndex: 'action',
           scopedSlots: { customRender: 'action' }
         }
@@ -129,37 +126,57 @@ export default {
         return getUsers(parameter).then(res => {
           return res.data
         })
-      },
+      }
     }
   },
 
   components: {
-    STable
+    STable,
+    AddUserModal,
+    ActivateUserModal,
+    ResetPasswordModal,
+    EditUserModal
   },
 
   methods: {
-    handleNew() {
-      getUserGroups().then(res => {
-        this.userGroups = res.data.data
-      })
-      this.visible = true
+    handleNewUser() {
+      this.$refs.addModal.add()
     },
-    handleOk() {
-      this.form.validateFields((err, values) => {
-        if (!err) {
-          console.log(JSON.stringify(this.mdl))
-          addUser(this.mdl).then(res => {
-            this.visible = false
-            this.form.resetFields()
-            this.$message.success('用户创建成功')
-          })
-        }
+    disableUser(record) {
+      disableUser({id: record.id}).then(response => {
+        this.$refs.table.refresh()
       })
+    },
+    enableUser(record) {
+      this.$refs.activateModal.add(record)
+    },
+    editUser(record) {
+      this.$refs.editModal.add(record)
+    },
+    deleteUser(record) {
+      deleteUser(record).then(response => {
+        console.log(JSON.stringify(response))
+        this.$refs.table.refresh()
+      })
+    },
+    resetPassword(record) {
+      this.$refs.resetPasswordModal.add(record)
+    },
+    refreshData() {
+      this.$refs.table.refresh()
+    },
+    resetPasswordCallback() {
+      this.$message.success('密码重置成功');
     }
   },
   filters: {
     fromNow(date) {
-      return moment(date).format('YYYY-MM-DD HH:mm:ss')
+      return moment(date).format('YYYY-MM-DD')
+    },
+    statusFilter(status) {
+      if (status == 0) return '未激活'
+      else if (status == 1) return '激活'
+      else if (status == 2) return '停用'
     }
   }
 }
